@@ -4,15 +4,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeor
 @Entity()
 
 export class Pacientes {
-    // id:            number;
-    // Nombre:        string;
-    // Apellido:      string;
-    // N_documento:   string;
-    // Telefono:      string;
-    // Correo:        string;
-    // Fecha:         Date;
-    // Hora:          string;
-    // Nombre_doctor: string;
+    
     @PrimaryGeneratedColumn()
   id: number;
   @Column({ type: 'varchar', length: 50 })
