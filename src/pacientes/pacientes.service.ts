@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePacienteDto } from "./dto/CreatePacienteDto";
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 import { Pacientes } from './entities/paciente.entity';
@@ -25,21 +25,47 @@ export class PacientesService {
     return await this.pacientesRepository.save(createPaciente);    
 
   }
-
-  findAll() {
-    return `This action returns all pacientes`;
+// MOSTRAR TODO
+  // findAll() {
+    async findAll(): Promise<Pacientes[]> {
+    
+      return await this.pacientesRepository.find();
+    // return `This action returns all pacientes`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} paciente`;
+  // findOne(id: number) {
+  //   return `This action returns a #${id} paciente`;
+  // }
+  async findOne(id: number): Promise<Pacientes> {
+    const pacientesId = await this.pacientesRepository.findOneBy({id});
+
+      if(!pacientesId) throw new NotFoundException('Paciente no encontrado con ese ID');
+      return pacientesId;
+
   }
 
-  update(id: number, updatePacienteDto: UpdatePacienteDto) {
-    console.log(updatePacienteDto);
-    return `This action updates a #${id} paciente`;
+  async update(id: number, updatePacienteDto: UpdatePacienteDto) {
+    const getPaciente = await this.pacientesRepository.findOne({
+      where: {
+        id
+     }
+    })
+       
+      if(!getPaciente) throw new NotFoundException('Paciente no encontrado con ese ID');
+       
+      const updatePaciente = await Object.assign(getPaciente, updatePacienteDto);
+      return  await this.pacientesRepository.save(updatePaciente);
+       //return `This action updates a #${id} video`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} paciente`;
+
+  // update(id: number, updatePacienteDto: UpdatePacienteDto) {
+  //   console.log(updatePacienteDto);
+  //   return `This action updates a #${id} paciente`;
+  // }
+
+  async remove(id: number) {
+    return await this.pacientesRepository.delete(id);
   }
+
 }
